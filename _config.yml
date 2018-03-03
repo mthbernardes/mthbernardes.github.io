@@ -1,0 +1,19 @@
+name: Gambler
+description: Hacking and other stuffs
+meta_description: "Posts about hacking, coding and other stuffs"
+
+markdown: kramdown
+highlighter: pygments
+logo: false
+paginate: 15
+baseurl: /
+domain_name: 'mthbernardes.github.io'
+google_analytics: 'UA-68962388-2'
+gems: [jekyll-paginate]
+
+# Details for the RSS feed generator
+url:            'https://mthbernardes.github.io'
+author:         'Matheus Bernardes'
+author_description: 'Security consultant, Python programmer, CTF <a href="https://rtfm-ctf.org" target="_blank">RTFM</a> team player and an enthusiast (noob) in reverse engineering.'
+author_facebook: 'mthbernardes'
+author_twitter: 'mthbernardes'

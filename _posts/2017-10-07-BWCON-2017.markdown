@@ -1,0 +1,30 @@
+---
+layout: post
+title: BWCON 2017[pt-BR]
+description: Evento BWCON 2017
+keywords: conference, macro, bwcon17, talk
+disqus: true
+tags: [BWCON17]
+categories: Conference
+---
+#### BWCON 2017 - Phishing a Sh3ll
+Esse ano pela primeira vez fui para Recife, e palestrei na BWCON evento organizado pelo mestre @Toronto com patrocínio da Tempest e da El Pescador, um evento sinistro, galera com alto nível técnico.
+Minha talk foi sobre Bypass de AV com VBA + Powershell, uma parada simples, mas que pode salvar ai em alguns projetos onde a única porta de entrada para a rede do cliente vai ser o phishing.
+Vou deixar aqui então o link do ppt(Gdrive) e os videos da PoC.
+
+##### Slides
+[Phishing a Sh3ll]({{ "https://docs.google.com/presentation/d/1EPjqhAW1mFn_4bajhlzh76wwjMzjpRjDllUUyb1-DPA/edit?usp=sharing" }})
+
+
+##### Videos PoC
+
+[Avast Execução Macro]({{ "https://youtu.be/N4aec7kvMB8" }})
+
+[Avast Execução Schedtask]({{ "https://youtu.be/JWAkj7enkCI" }})
+
+[AVG Execução Macro]({{ "https://youtu.be/brJ9Bke0YFY" }})
+
+[AVG Execução Schedtask]({{ "https://youtu.be/nGP7RS9WJ4I" }})
+
+##### Greatz
+Queria aproveitar e agradecer ao mestre @Toronto pela oportunidade, e a Conviso empresa que trabalho que proporcionou minha ida e estadia em Recife.

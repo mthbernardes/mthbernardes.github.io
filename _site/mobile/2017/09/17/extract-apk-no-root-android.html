@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>Gambler - Hacking and other stuffs</title>
+    <meta name="description" content="Posts about hacking, coding and other stuffs" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+<body class="home-template">
+
+    <header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="/">Home</a>
+        <a class="subscribe-button icon-feed" href="/feed.xml">Subscribe</a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Extract apk from a non root Android</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2017-09-17">17 Sep 2017</time>
+                
+                    on Mobile
+                
+            </section>
+        </header>
+
+<!--         <header class="post-header">
+            <a id="blog-logo" href="https://mthbernardes.github.io">
+                
+                    <span class="blog-title">Gambler</span>
+                
+            </a>
+        </header> -->
+
+        <!-- <span class="post-meta">
+            <time datetime="2017-09-17">17 Sep 2017</time>
+            
+                on Mobile
+            
+        </span> -->
+
+        <!-- <h1 class="post-title">Extract apk from a non root Android</h1> -->
+
+        <section class="post-content">
+            <p>When your device is not rooted, and you want to analyse some app, you can’t just pull the application apk from it, so to do that, I use this trick.</p>
+
+<p><strong>NOTE Your android need to have curl binary</strong></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>adb shell find / -name curl</code></pre></figure>
+
+<p>If the previous command return the curl path, access your smartphone using,</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>adb shell</code></pre></figure>
+
+<p>then execute the following command just changing the package name,</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span> <span class="nv">package</span><span class="o">=</span><span class="s2">&quot;package_name_goes_here&quot;</span><span class="p">;</span><span class="nv">path</span><span class="o">=</span><span class="k">$(</span>pm path <span class="k">$(</span>pm list packages <span class="p">|</span> grep <span class="nv">$package</span> <span class="p">|</span> cut -d <span class="s1">&#39;:&#39;</span> -f2<span class="k">)</span> <span class="p">|</span> cut -d <span class="s1">&#39;:&#39;</span> -f2<span class="k">)</span><span class="p">;</span><span class="nv">filename</span><span class="o">=</span><span class="k">$(</span>basename <span class="nv">$path</span><span class="k">)</span><span class="p">;</span>curl --upload-file <span class="nv">$path</span> https://transfer.sh/<span class="nv">$filename</span></code></pre></figure>
+
+<p>in the final you’ll receive an transfer.sh link, where your apk file is saved.</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+            <!-- If we want to display author's name and bio -->
+            
+                <figure class="author-image">
+                    <a class="img" href="/" style="background-image: url(/assets/images/profile.png)">
+                    <span class="hidden">Matheus Bernardes's Picture</span></a>
+                </figure>
+                <section class="author">
+                    <!-- Author Name -->
+                    <h4> Matheus Bernardes </h4>
+                    <!-- Author Bio -->
+                    <p>
+                        Security consultant, Python programmer, CTF <a href="https://rtfm-ctf.org" target="_blank">RTFM</a> team player and an enthusiast (noob) in reverse engineering.
+                    </p>
+                </section>
+            
+
+            <!-- Share links section -->
+            <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Extract apk from a non root Android&amp;url=mthbernardes.github.io/mobile/2017/09/17/extract-apk-no-root-android.html"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=mthbernardes.github.io/mobile/2017/09/17/extract-apk-no-root-android.html"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=mthbernardes.github.io/mobile/2017/09/17/extract-apk-no-root-android.html"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+            <!-- Disqus comments -->
+            
+                <section class="disqus">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'gambler-1';
+        var disqus_developer = 1; // developer mode is on
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer clearfix">
+      <section class="copyright">
+        <a href="/">Gambler</a> &copy;
+              2018 &bull; All rights reserved.
+              <script src="https://www.hackthebox.eu/badge/7591"></script>
+      </section>
+      <section class="poweredby">Made with Jekyll using
+        <a href="http://github.com/rosario/kasper">Kasper theme</a>
+      </section>
+    </footer>
+
+    <script type="text/javascript" src="/assets/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-68962388-2']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+</body>
+</html>
