@@ -45,6 +45,9 @@ One scenario is a distributed database called Datomic. The free version of Datom
 
 #### Datomic Timeline
 2018-03-14 - Initial Vulnerability discovery
+
 2018-03-20 - First contact with Datomic team
+
 2018-03-29 - Fix released
+
 2018-04-05 - Blog published.

