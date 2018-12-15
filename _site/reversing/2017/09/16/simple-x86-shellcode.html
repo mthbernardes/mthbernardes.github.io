@@ -41,7 +41,7 @@
         </header>
 
 <!--         <header class="post-header">
-            <a id="blog-logo" href="https://mthbernardes.github.io">
+            <a id="blog-logo" href="http://localhost:4000">
                 
                     <span class="blog-title">Gambler</span>
                 
@@ -62,8 +62,8 @@
 
 <p>The initial code bellow have all the comments to make it easy to understand how to use the sys_execve,</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>section .data:
-	cmd: db <span class="s2">&quot;/bin/sh&quot;</span>,0x0
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">section .data:
+	cmd: db <span class="s2">"/bin/sh"</span>,0x0
 section .text:
 	global _start
 	_start:
@@ -75,28 +75,28 @@ section .text:
 
 <p>Just to test this code, lets compile it, link and execute the binary shell to get the /bin/sh</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>root@demoniware:~/shellcode# nasm -f elf32 sh3llc0d3.asm <span class="o">&amp;&amp;</span> ld -m elf_i386 -s -o shell sh3llc0d3.o
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">root@demoniware:~/shellcode# nasm <span class="nt">-f</span> elf32 sh3llc0d3.asm <span class="o">&amp;&amp;</span> ld <span class="nt">-m</span> elf_i386 <span class="nt">-s</span> <span class="nt">-o</span> shell sh3llc0d3.o
 root@demoniware:~/shellcode# ./shell
-<span class="c1"># id</span>
-<span class="nv">uid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span></code></pre></figure>
+<span class="c"># id</span>
+<span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span></code></pre></figure>
 
 <p>But this code is not nullbyte free and it’s a problem when we are working with shellcodes, so with some work I got this code,</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>xor eax,eax     <span class="p">;</span> zero to eax
-push eax        <span class="p">;</span> put <span class="m">0</span> in stack, end of string
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">xor eax,eax     <span class="p">;</span> zero to eax
+push eax        <span class="p">;</span> put 0 <span class="k">in </span>stack, end of string
 push 0x68732f6e <span class="p">;</span> part of /bin/sh
 push 0x69622f2f <span class="p">;</span> part of /bin/sh
 mov ebx,esp     <span class="p">;</span> mov /bin/sh to ebx
 push eax        <span class="p">;</span> put NULL on argv
 push ebx        <span class="p">;</span> put filename on stack
 mov ecx, esp    <span class="p">;</span> put filename to ecx
-xor edx,edx     <span class="p">;</span> <span class="nv">envp</span> <span class="o">=</span> NULL
+xor edx,edx     <span class="p">;</span> envp <span class="o">=</span> NULL
 mov al,0x0b     <span class="p">;</span> 0x0b to call sys_execve
 int 0x80        <span class="p">;</span> kernel interrupt</code></pre></figure>
 
 <p>To confirm if my code is free of nullbytes, I can use this site <a href="https://defuse.ca/online-x86-assembler.htm#disassembly" target="_blank">defuse.ca</a>, that translate asm instructions to opcodes, and now I have a shellcode free of nullbytes with 25 bytes.</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="se">\x</span><span class="m">31</span><span class="se">\x</span>C0<span class="se">\x</span><span class="m">50</span><span class="se">\x</span><span class="m">68</span><span class="se">\x</span>6E<span class="se">\x</span>2F<span class="se">\x</span><span class="m">73</span><span class="se">\x</span><span class="m">68</span><span class="se">\x</span><span class="m">68</span><span class="se">\x</span>2F<span class="se">\x</span>2F<span class="se">\x</span><span class="m">62</span><span class="se">\x</span><span class="m">69</span><span class="se">\x</span><span class="m">89</span><span class="se">\x</span>E3<span class="se">\x</span><span class="m">50</span><span class="se">\x</span><span class="m">53</span><span class="se">\x</span><span class="m">89</span><span class="se">\x</span>E1<span class="se">\x</span><span class="m">31</span><span class="se">\x</span>D2<span class="se">\x</span>B0<span class="se">\x</span>0B<span class="se">\x</span>CD<span class="se">\x</span><span class="m">80</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="se">\x</span>31<span class="se">\x</span>C0<span class="se">\x</span>50<span class="se">\x</span>68<span class="se">\x</span>6E<span class="se">\x</span>2F<span class="se">\x</span>73<span class="se">\x</span>68<span class="se">\x</span>68<span class="se">\x</span>2F<span class="se">\x</span>2F<span class="se">\x</span>62<span class="se">\x</span>69<span class="se">\x</span>89<span class="se">\x</span>E3<span class="se">\x</span>50<span class="se">\x</span>53<span class="se">\x</span>89<span class="se">\x</span>E1<span class="se">\x</span>31<span class="se">\x</span>D2<span class="se">\x</span>B0<span class="se">\x</span>0B<span class="se">\x</span>CD<span class="se">\x</span>80</code></pre></figure>
 
 <h3 id="thanks-to-thiagopeixoto-for-the-help">Thanks to @thiagopeixoto for the help</h3>
 
@@ -116,7 +116,7 @@ int 0x80        <span class="p">;</span> kernel interrupt</code></pre></figure>
                     <h4> Matheus Bernardes </h4>
                     <!-- Author Bio -->
                     <p>
-                        Security consultant, Python programmer, CTF <a href="https://rtfm-ctf.org" target="_blank">RTFM</a> team player and an enthusiast (noob) in reverse engineering.
+                        Just another security engineer.
                     </p>
                 </section>
             
@@ -168,7 +168,6 @@ int 0x80        <span class="p">;</span> kernel interrupt</code></pre></figure>
       <section class="copyright">
         <a href="/">Gambler</a> &copy;
               2018 &bull; All rights reserved.
-              <script src="https://www.hackthebox.eu/badge/7591"></script>
       </section>
       <section class="poweredby">Made with Jekyll using
         <a href="http://github.com/rosario/kasper">Kasper theme</a>

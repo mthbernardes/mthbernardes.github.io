@@ -41,7 +41,7 @@
         </header>
 
 <!--         <header class="post-header">
-            <a id="blog-logo" href="https://mthbernardes.github.io">
+            <a id="blog-logo" href="http://localhost:4000">
                 
                     <span class="blog-title">Gambler</span>
                 
@@ -62,15 +62,15 @@
 
 <p><strong>NOTE Your android need to have curl binary</strong></p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>adb shell find / -name curl</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">adb shell find / <span class="nt">-name</span> curl</code></pre></figure>
 
 <p>If the previous command return the curl path, access your smartphone using,</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>adb shell</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">adb shell</code></pre></figure>
 
 <p>then execute the following command just changing the package name,</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span> <span class="nv">package</span><span class="o">=</span><span class="s2">&quot;package_name_goes_here&quot;</span><span class="p">;</span><span class="nv">path</span><span class="o">=</span><span class="k">$(</span>pm path <span class="k">$(</span>pm list packages <span class="p">|</span> grep <span class="nv">$package</span> <span class="p">|</span> cut -d <span class="s1">&#39;:&#39;</span> -f2<span class="k">)</span> <span class="p">|</span> cut -d <span class="s1">&#39;:&#39;</span> -f2<span class="k">)</span><span class="p">;</span><span class="nv">filename</span><span class="o">=</span><span class="k">$(</span>basename <span class="nv">$path</span><span class="k">)</span><span class="p">;</span>curl --upload-file <span class="nv">$path</span> https://transfer.sh/<span class="nv">$filename</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nv">package</span><span class="o">=</span><span class="s2">"package_name_goes_here"</span><span class="p">;</span><span class="nv">path</span><span class="o">=</span><span class="k">$(</span>pm path <span class="k">$(</span>pm list packages | <span class="nb">grep</span> <span class="nv">$package</span> | cut <span class="nt">-d</span> <span class="s1">':'</span> <span class="nt">-f2</span><span class="k">)</span> | cut <span class="nt">-d</span> <span class="s1">':'</span> <span class="nt">-f2</span><span class="k">)</span><span class="p">;</span><span class="nv">filename</span><span class="o">=</span><span class="k">$(</span>basename <span class="nv">$path</span><span class="k">)</span><span class="p">;</span>curl <span class="nt">--upload-file</span> <span class="nv">$path</span> https://transfer.sh/<span class="nv">$filename</span></code></pre></figure>
 
 <p>in the final you’ll receive an transfer.sh link, where your apk file is saved.</p>
 
@@ -90,7 +90,7 @@
                     <h4> Matheus Bernardes </h4>
                     <!-- Author Bio -->
                     <p>
-                        Security consultant, Python programmer, CTF <a href="https://rtfm-ctf.org" target="_blank">RTFM</a> team player and an enthusiast (noob) in reverse engineering.
+                        Just another security engineer.
                     </p>
                 </section>
             
@@ -142,7 +142,6 @@
       <section class="copyright">
         <a href="/">Gambler</a> &copy;
               2018 &bull; All rights reserved.
-              <script src="https://www.hackthebox.eu/badge/7591"></script>
       </section>
       <section class="poweredby">Made with Jekyll using
         <a href="http://github.com/rosario/kasper">Kasper theme</a>

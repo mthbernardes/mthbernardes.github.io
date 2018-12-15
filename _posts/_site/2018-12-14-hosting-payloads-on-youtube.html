@@ -1,0 +1,7 @@
+<h4 id="why-that">Why that?</h4>
+<p>It’s a trick created during a red team mission, where we have a rubber ducky, which will download a bash script to run the <a href="https://github.com/mthbernardes/GTRS">GTRS</a> on the victm machine, but we have problem, the traffic with the C2 will be safe using the <a href="https://github.com/mthbernardes/GTRS">GTRS</a>, but the infected machine need to talk directly to the C2 to get our payload, so we had the idea to use Youtube to host our bash payload.</p>
+
+<h3 id="recipe-of-rataria">Recipe of Rataria</h3>
+<p>First of all, create your payload with powershell, bash, python or whatever language you want, then encode it in base64.</p>
+
+<p><code class="highlighter-rouge">base64 payload | tr -d '\n'</code></p>

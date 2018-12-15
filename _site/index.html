@@ -52,6 +52,32 @@
 
     <article class="post">
         <header class="post-header">
+            <h2 class="post-title"><a href="/rce/2018/12/14/hosting-payloads-on-youtube.html">Hosting payloads on Youtube</a></h2>
+        </header>
+        <section class="post-excerpt">
+            <h4 id="why-that">Why that?</h4>
+<p>It’s a trick created during a red team mission, where we have a rubber ducky, which will download a bash script to run the <a href="https://github.com/mthbernardes/GTRS">GTRS</a> on the victm machine, but we have problem, the traffic with the C2 will be safe using the <a href="https://github.com/mthbernardes/GTRS">GTRS</a>, but the infected machine need to talk directly to the C2 to get our payload, so we had the idea to use Youtube to host our bash payload.</p>
+
+ <a class="read-more" href="/rce/2018/12/14/hosting-payloads-on-youtube.html">&raquo;</a>
+        </section>
+        <footer class="post-meta">
+            
+                <img class="author-thumb" src="/assets/images/profile.png" alt="Author's profile picture" nopin="nopin" />
+                Matheus Bernardes
+            
+            
+                on RCE
+            
+            <time class="post-date" datetime="2018-12-14">
+                14 Dec 2018
+            </time>
+        </footer>
+    </article>
+
+    
+
+    <article class="post">
+        <header class="post-header">
             <h2 class="post-title"><a href="/rce/2018/03/14/abusing-h2-database-alias.html">Abusing H2 Database ALIAS</a></h2>
         </header>
         <section class="post-excerpt">
@@ -111,8 +137,8 @@
 <p>Recently I posted how to get ssh password using strace, but it’s no 100% effective, because the strace output changes on different distros, so searching for another approach I found this site <a href="http://www.chokepoint.net/2014/01/more-fun-with-pam-python-failed.html">ChokePoint</a> where they show how to create a PAM module using python to log failed attempts on ssh, now all I have to do, was change where they log the password.
 Original script, use the function auth_log when the login failed.</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span></span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">check_pw</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">resp</span><span class="p">):</span>
-        <span class="n">auth_log</span><span class="p">(</span><span class="s2">&quot;Remote Host: </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pamh</span><span class="o">.</span><span class="n">rhost</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">resp</span><span class="p">))</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python">    <span class="k">if</span> <span class="ow">not</span> <span class="n">check_pw</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">resp</span><span class="p">):</span>
+        <span class="n">auth_log</span><span class="p">(</span><span class="s">"Remote Host: </span><span class="si">%</span><span class="s">s (</span><span class="si">%</span><span class="s">s:</span><span class="si">%</span><span class="s">s)"</span> <span class="o">%</span> <span class="p">(</span><span class="n">pamh</span><span class="o">.</span><span class="n">rhost</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">resp</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">pamh</span><span class="o">.</span><span class="n">PAM_AUTH_ERR</span>
      <span class="k">return</span> <span class="n">pamh</span><span class="o">.</span><span class="n">PAM_SUCCESS</span></code></pre></figure>
 
@@ -169,7 +195,7 @@ Sometimes when you get root access to a server or a workstation, you don’t rea
             <h4 id="the-problem">The problem</h4>
 <p>It’s common to you find XSS vulnerabilities during an web pentests, but some times, you’re testing an application that contains more then one interface, like user interface and admin interface, so how you can test for xss on the admin interface being just a regular user? Well it’s kind of simple, but it’s not a test to find all the xss on the admin page, for example, when you register on an application, there’s some informations you provide, like, name, address, bio and other things, so we can assume that the admin interface can read this informations, so we can just send XSS payloads, to try to get a XSS exploration, but not a payload like the most common,</p>
 
-<figure class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;XSS&#39;</span><span class="p">)&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s1">'XSS'</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
 
  <a class="read-more" href="/web/2017/12/07/Test-XSS-with-no-access-to-response.html">&raquo;</a>
         </section>
@@ -301,7 +327,7 @@ In my first attempt I failed, because all the requests made by the app are pinne
             <h4 id="sri-lanka">SRI LANKA</h4>
 <p>The first thing to do is to run the “file” command, which will indicate that the file is an elf32. After that the binary was analyzed on r2 and I ended up realizing that I forgot to do the most simple and obvious thing as I am certified SGSE ( Strings grep Specialist Engineer), so I just executed the following command:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>strings -e s c9c18a2c3f65bb8d1f6133765889774a1224cbe993edcc1641275be12b29b10a <span class="p">|</span> less</code></pre></figure>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">strings <span class="nt">-e</span> s c9c18a2c3f65bb8d1f6133765889774a1224cbe993edcc1641275be12b29b10a | less</code></pre></figure>
 
  <a class="read-more" href="/reversing/2017/08/12/GCL17-SRI-LANKA-AND-AUSTRIA.html">&raquo;</a>
         </section>
@@ -334,7 +360,6 @@ In my first attempt I failed, because all the requests made by the app are pinne
       <section class="copyright">
         <a href="/">Gambler</a> &copy;
               2018 &bull; All rights reserved.
-              <script src="https://www.hackthebox.eu/badge/7591"></script>
       </section>
       <section class="poweredby">Made with Jekyll using
         <a href="http://github.com/rosario/kasper">Kasper theme</a>

@@ -1,0 +1,15 @@
+<p>When your device is not rooted, and you want to analyse some app, you can’t just pull the application apk from it, so to do that, I use this trick.</p>
+
+<p><strong>NOTE Your android need to have curl binary</strong></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">adb shell find / <span class="nt">-name</span> curl</code></pre></figure>
+
+<p>If the previous command return the curl path, access your smartphone using,</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">adb shell</code></pre></figure>
+
+<p>then execute the following command just changing the package name,</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nv">package</span><span class="o">=</span><span class="s2">"package_name_goes_here"</span><span class="p">;</span><span class="nv">path</span><span class="o">=</span><span class="k">$(</span>pm path <span class="k">$(</span>pm list packages | <span class="nb">grep</span> <span class="nv">$package</span> | cut <span class="nt">-d</span> <span class="s1">':'</span> <span class="nt">-f2</span><span class="k">)</span> | cut <span class="nt">-d</span> <span class="s1">':'</span> <span class="nt">-f2</span><span class="k">)</span><span class="p">;</span><span class="nv">filename</span><span class="o">=</span><span class="k">$(</span>basename <span class="nv">$path</span><span class="k">)</span><span class="p">;</span>curl <span class="nt">--upload-file</span> <span class="nv">$path</span> https://transfer.sh/<span class="nv">$filename</span></code></pre></figure>
+
+<p>in the final you’ll receive an transfer.sh link, where your apk file is saved.</p>
