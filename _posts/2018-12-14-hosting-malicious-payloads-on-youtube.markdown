@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Hosting payloads on Youtube
+title: Hosting malicious payloads on Youtube
 description: Use Youtube to host your malicious payloads
 keywords: payload,youtube,shell 
 disqus: true
