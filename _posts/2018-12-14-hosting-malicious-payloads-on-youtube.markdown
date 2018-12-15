@@ -14,7 +14,7 @@ It's a trick created during a red team mission, where we have a rubber ducky, wh
 First of all, create your payload with powershell, bash, python or whatever language you want, then encode it in base64.
 
 ```bash
-base64 payload | tr -d '\n'
+base64 -w0 payload
 ```
 
 Now upload a video on youtube, make it unlisted and on the video description insert your payload encoded, BUT to make your life easier add a tag at the start and end of the payload, like this, `sCmD[YOUPAYLOAD]eCmD`, and that's all, now all you need is execute this command on your rubber ducky payload
