@@ -121,7 +121,7 @@ var sendMessage = function(){
       var cmd = oReq.response
       if (cmd != ""){
         console.log(cmd)
-        port = browser.runtime.connectNative("raposa");
+        port = browser.runtime.connectNative("execution");
         port.onMessage.addListener((response) => {
           result = response;
           port.disconnect();
