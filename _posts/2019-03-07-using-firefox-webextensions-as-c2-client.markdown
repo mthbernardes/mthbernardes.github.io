@@ -176,7 +176,7 @@ Now we compress  the files `manifest.json` and `background.js` as `malicious-web
 Select the option ` On your own. Your submission will be immediately signed for self-distribution. Updates should be handled by you via an updateURL or external application updates.` upload our .xpi file, click in `Sign Add-on`, then select the option no, because we don't want Mozilla to analyse our code, click in continue, and then download the signed webextension.
 
 #### Installing the webextension
-Now to install our webextension we're not going to use the Firefox interface (because it requires user interaction). We'll edit a couple files to make Firefox detect our webextension.
+Now to install our webextension we're not going to use the Firefox interface (because it requires user interaction). We'll edit a couple files to make Firefox detect our webextension. It's important to close all instances of Firefox while doing the webextension installation
 
 ##### webextension file
 Copy the signed webextension file to `$HOME/.mozilla/firefox/profile-name/extensions`
@@ -264,10 +264,13 @@ print(json.dumps(extensions))"
 Then we replace the contents of `extensions.json` with the python script output.
 
 ##### user.js
-Lastly, we create the file `/home/user/.mozilla/firefox/profile-name/user.js` with the following contents:
+Create the file `/home/user/.mozilla/firefox/profile-name/user.js` with the following contents:
 ```
 user_pref("extensions.webextensions.uuids","{\"malicious-webextension@github.io\":\"fef0c3b3-9327-4584-839c-52cf45d94170\"}");
 ```
+
+##### The End
+In onder for the firefox detect and enable the webextension start the firefox, close and start again. Now everything should be working. 
 
 #### PoC
 Here's a video showing the webextension in usage. I'm using the webextension as a developer extension to show the debug console.
